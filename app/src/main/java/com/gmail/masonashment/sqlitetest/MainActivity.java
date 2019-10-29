@@ -10,11 +10,14 @@ import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,16 +27,25 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         SQLiteDatabase sqLiteDatabase = getBaseContext().openOrCreateDatabase("sqlite-test-1.db",MODE_PRIVATE,null);
-        sqLiteDatabase.execSQL("CREATE TABLE contacts(name TEXT, phone INTEGER, email TEXT)");
-        sqLiteDatabase.execSQL("INSERT INTO contacts VALUES('mason',1231234,'mason@email.com')");
-        sqLiteDatabase.execSQL("INSERT INTO contacts VALUES('jim',1251235,'jim@internet.com')");
+        String sql = "CREATE TABLE contacts(name TEXT, phone INTEGER, email TEXT)";
+        Log.d(TAG, "onCreate: sql is " + sql);
+        sqLiteDatabase.execSQL(sql);
+        sql = "INSERT INTO contacts VALUES('mason',1231234,'mason@email.com')";
+        Log.d(TAG, "onCreate: sql is " + sql);
+        sqLiteDatabase.execSQL(sql);
+        sql = "INSERT INTO contacts VALUES('jim',1251235,'jim@internet.com')";
+        Log.d(TAG, "onCreate: sql is " + sql);
+        sqLiteDatabase.execSQL(sql);
 
         Cursor query = sqLiteDatabase.rawQuery("SELECT * FROM contacts;",null);
         if(query.moveToFirst()) {
             String name = query.getString(0);
             int phone = query.getInt(1);
             String email = query.getString(2);
+            Toast.makeText(this,"Name = " + name + " phone = " + phone + " email " + email,Toast.LENGTH_LONG).show();
         }
+        query.close();
+        sqLiteDatabase.close();
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
